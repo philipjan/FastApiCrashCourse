@@ -47,6 +47,25 @@ def add_product(product: ProductCreate, db: Session = Depends(db_manager.get_db_
         print(f"Exception: {ex}")
         raise HTTPException(status_code=500, detail="Something went wrong")
 
+@app.put("/product")
+def update_product(product: Product, db: Session = Depends(db_manager.get_db_session)):
+    try:
+        existing_product = db.query(OrmProduct).filter(OrmProduct.id == product.id).first()
+        if existing_product is None:
+            raise HTTPException(status_code=404, detail="Product not found")
+        else:
+            existing_product.name = product.name
+            existing_product.description = product.description
+            existing_product.id = product.price
+            existing_product.quantity = product.quantity
+            db.commit()
+    except HTTPException as ex:
+        raise ex
+    except Exception as ex:
+        print(f"Exception: {ex}")
+        raise HTTPException(status_code=500, detail="Something went wrong")
+
+
 @app.delete("/product/{id}")
 def delete_product(id: int, db: Session = Depends(db_manager.get_db_session)):
     try:
@@ -58,6 +77,8 @@ def delete_product(id: int, db: Session = Depends(db_manager.get_db_session)):
             return result
         else:
             raise HTTPException(status_code=404, detail="Product not found")
+    except HTTPException as ex:
+        raise ex
     except Exception as ex:
         print(f"Exception: {ex}")
         raise HTTPException(status_code=500, detail="Something went wrong")
