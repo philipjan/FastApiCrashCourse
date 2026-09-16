@@ -7,3 +7,10 @@ class Product(BaseModel):
     description: str
     price: float
     quantity: int
+
+
+class ProductCreate(BaseModel):
+    name: str
+    description: str
+    price: float
+    quantity: int
